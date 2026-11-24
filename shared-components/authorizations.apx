@@ -1,0 +1,11 @@
+authorization direitos-de-administração (
+    name: Direitos de Administração
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: return true;
+    }
+    error {
+        errorMessage: Privilégios insuficientes; o usuário não é um Administrador
+    }
+)
+

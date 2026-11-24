@@ -1,0 +1,12 @@
+lov jogo-nome (
+    name: JOGO.NOME
+    source {
+        tableName: JOGO
+    }
+    columnMapping {
+        return: ID
+        display: NOME
+        defaultSort: NOME
+    }
+)
+

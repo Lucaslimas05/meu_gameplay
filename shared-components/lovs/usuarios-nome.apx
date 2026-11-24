@@ -1,0 +1,12 @@
+lov usuarios-nome (
+    name: USUARIOS.NOME
+    source {
+        tableName: USUARIOS
+    }
+    columnMapping {
+        return: ID
+        display: NOME
+        defaultSort: NOME
+    }
+)
+

@@ -1,0 +1,59 @@
+app MEU-GAMEPLAY (
+    name: MEU_GAMEPLAY
+    logo {
+        type: text
+        text: MEU_GAMEPLAY
+    }
+    navigation {
+        homeUrl: {
+            page: 1
+        }
+        loginUrl: {
+            page: LOGIN
+        }
+    }
+    navigationMenu {
+        listTemplate: @/side-navigation-menu
+        templateOptions: [
+            #DEFAULT#
+            t-TreeNav--styleA
+            js-navCollapsed--hidden
+        ]
+        list: @menu-de-navegação
+    }
+    navigationBar {
+        list: @barra-de-navegação
+        listTemplate: @/navigation-bar
+        templateOptions: #DEFAULT#
+    }
+    userInterface {
+        currentTheme: @universal-theme
+        globalPage: 0
+        addBuiltWithApexToFooter: false
+    }
+    appFormatMasks {
+        date: DS
+        timestamp: DS
+        timestampTimeZone: DS
+    }
+    authentication {
+        scheme: @login-por-email
+    }
+    globalization {
+        primaryLanguage: pt-br
+    }
+    reportPrinting {
+        type: useInstanceSettings
+    }
+    runtime {
+        allowFeedback: true
+    }
+
+    substitution APP_NAME (
+        value {
+            staticValue: MEU_GAMEPLAY
+        }
+    )
+
+)
+

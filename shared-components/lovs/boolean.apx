@@ -1,0 +1,20 @@
+lov boolean (
+    name: BOOLEAN
+    source {
+        location: staticValues
+    }
+
+    entry false (
+        sequence: 2
+        display: Não
+        return: FALSE
+    )
+
+    entry true (
+        sequence: 1
+        display: Sim
+        return: TRUE
+    )
+
+)
+

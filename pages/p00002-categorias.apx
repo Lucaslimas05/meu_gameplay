@@ -1,0 +1,157 @@
+page 2 (
+    name: Categorias
+    alias: CATEGORIAS
+    title: Categorias
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region categorias (
+        name: Categorias
+        type: classicReport
+        source {
+            location: localDatabase
+            tableName: CATEGORIA
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--noPadding
+            ]
+        }
+        componentAppearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Report--stretch
+                t-Report--staticRowColors
+                t-Report--rowHighlight
+                t-Report--inline
+                t-Report--hideNoPagination
+            ]
+        }
+        messages {
+            whenNoDataFound: Dados não encontrados.
+        }
+
+        column ID (
+            reportColumnQueryId: 1
+            derivedColumn: N
+            type: link
+            heading {
+                alignment: center
+            }
+            layout {
+                sequence: 20
+                columnAlignment: center
+            }
+            link {
+                target: {
+                    page: 3
+                    items: {
+                        P3_ID: \#ID#\
+                    }
+                    action: resetPagination
+                }
+                linkText: <span role="img" aria-label="Editar" class="fa fa-edit" title="Editar"></span>
+            }
+            sorting {
+                sortable: false
+            }
+        )
+
+        column NOME (
+            reportColumnQueryId: 2
+            derivedColumn: N
+            heading {
+                heading: Nome
+            }
+            layout {
+                sequence: 10
+            }
+            sorting {
+                defaultSequence: 1
+            }
+        )
+
+    )
+
+    region navegação-estrutural (
+        name: Navegação Estrutural
+        type: breadcrumb
+        source {
+            breadcrumb: @navegação-estrutural
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Criar
+        layout {
+            sequence: 10
+            region: @categorias
+            slot: edit
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 3
+                clearCache: 3
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction editar-relatório-caixa-de-diálogo-fechada (
+        name: Editar Relatório - Caixa de Diálogo Fechada
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @categorias
+        }
+
+        action native-refresh (
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @categorias
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+

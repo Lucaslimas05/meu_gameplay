@@ -1,0 +1,16 @@
+authentication contas-do-oracle-apex (
+    name: Contas do Oracle APEX
+    type: oracleApexAccounts
+)
+
+authentication login-por-email (
+    name: Login por Email
+    type: custom
+    settings {
+        authFunctionName: pkg_auth.autenticar
+    }
+    loginProcessing {
+        postAuthenticationProcedureName: pkg_auth.pos_login
+    }
+)
+

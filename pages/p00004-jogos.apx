@@ -1,0 +1,176 @@
+page 4 (
+    name: Jogos
+    alias: JOGOS
+    title: Jogos
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region jogos (
+        name: Jogos
+        type: classicReport
+        source {
+            location: localDatabase
+            tableName: JOGO
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--noPadding
+            ]
+        }
+        componentAppearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Report--stretch
+                t-Report--staticRowColors
+                t-Report--rowHighlight
+                t-Report--inline
+                t-Report--hideNoPagination
+            ]
+        }
+        messages {
+            whenNoDataFound: Dados não encontrados.
+        }
+
+        column CATEGORIA_ID (
+            reportColumnQueryId: 3
+            derivedColumn: N
+            type: plainTextBasedOnLov
+            heading {
+                heading: Categoria
+            }
+            lov {
+                type: sharedComponent
+                lov: @categoria-nome
+            }
+            layout {
+                sequence: 3
+            }
+            sorting {
+                defaultSequence: 1
+            }
+        )
+
+        column ID (
+            reportColumnQueryId: 1
+            derivedColumn: N
+            type: link
+            heading {
+                alignment: center
+            }
+            layout {
+                sequence: 13
+                columnAlignment: center
+            }
+            link {
+                target: {
+                    page: 5
+                    items: {
+                        P5_ID: \#ID#\
+                    }
+                    action: resetPagination
+                }
+                linkText: <span role="img" aria-label="Editar" class="fa fa-edit" title="Editar"></span>
+            }
+            sorting {
+                sortable: false
+            }
+        )
+
+        column NOME (
+            reportColumnQueryId: 2
+            derivedColumn: N
+            heading {
+                heading: Nome
+            }
+            layout {
+                sequence: 2
+            }
+            sorting {
+                defaultSequence: 1
+            }
+        )
+
+    )
+
+    region navegação-estrutural (
+        name: Navegação Estrutural
+        type: breadcrumb
+        source {
+            breadcrumb: @navegação-estrutural
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Criar
+        layout {
+            sequence: 10
+            region: @jogos
+            slot: edit
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 5
+                clearCache: 5
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction editar-relatório-caixa-de-diálogo-fechada (
+        name: Editar Relatório - Caixa de Diálogo Fechada
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @jogos
+        }
+
+        action native-refresh (
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @jogos
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+

@@ -1,0 +1,201 @@
+page 8 (
+    name: Meus Jogos
+    alias: MEUS-JOGOS
+    title: Meus Jogos
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region meus-jogos (
+        name: Meus Jogos
+        type: classicReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                select ID,
+                       JOGO_ID,
+                       USUARIO_ID,
+                       nvl(to_char(HORAS_JOGADAS), 'Não informado') as HORAS_JOGADAS,
+                       ZERADO
+                  from JOGO_USUARIO WHERE USUARIO_ID = :G_USER_ID
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--noPadding
+            ]
+        }
+        componentAppearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Report--stretch
+                t-Report--staticRowColors
+                t-Report--rowHighlight
+                t-Report--inline
+                t-Report--hideNoPagination
+            ]
+        }
+        messages {
+            whenNoDataFound: Dados não encontrados.
+        }
+
+        column HORAS_JOGADAS (
+            reportColumnQueryId: 4
+            derivedColumn: N
+            heading {
+                heading: Horas Jogadas
+                alignment: end
+            }
+            layout {
+                sequence: 4
+                columnAlignment: end
+            }
+        )
+
+        column ID (
+            reportColumnQueryId: 1
+            derivedColumn: N
+            type: link
+            heading {
+                alignment: center
+            }
+            layout {
+                sequence: 6
+                columnAlignment: center
+            }
+            link {
+                target: {
+                    page: 9
+                    items: {
+                        P9_ID: \#ID#\
+                    }
+                    action: resetPagination
+                }
+                linkText: <span role="img" aria-label="Editar" class="fa fa-edit" title="Editar"></span>
+            }
+            sorting {
+                sortable: false
+            }
+        )
+
+        column JOGO_ID (
+            reportColumnQueryId: 2
+            derivedColumn: N
+            type: plainTextBasedOnLov
+            heading {
+                heading: Jogo
+            }
+            lov {
+                type: sharedComponent
+                lov: @jogo-nome
+            }
+            layout {
+                sequence: 2
+            }
+            sorting {
+                defaultSequence: 1
+            }
+        )
+
+        column ZERADO (
+            reportColumnQueryId: 5
+            derivedColumn: N
+            type: plainTextBasedOnLov
+            heading {
+                heading: Zerado
+            }
+            lov {
+                type: sharedComponent
+                lov: @boolean
+            }
+            layout {
+                sequence: 5
+            }
+        )
+
+    )
+
+    region navegação-estrutural (
+        name: Navegação Estrutural
+        type: breadcrumb
+        source {
+            breadcrumb: @navegação-estrutural
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Novo
+        layout {
+            sequence: 10
+            region: @meus-jogos
+            slot: edit
+        }
+        appearance {
+            buttonTemplate: @/icon
+            hot: true
+            templateOptions: #DEFAULT#
+            icon: fa-plus
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 9
+                clearCache: 9
+            }
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction editar-relatório-caixa-de-diálogo-fechada (
+        name: Editar Relatório - Caixa de Diálogo Fechada
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @meus-jogos
+        }
+
+        action native-refresh (
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @meus-jogos
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+

@@ -1,0 +1,12 @@
+lov categoria-nome (
+    name: CATEGORIA.NOME
+    source {
+        tableName: CATEGORIA
+    }
+    columnMapping {
+        return: ID
+        display: NOME
+        defaultSort: NOME
+    }
+)
+

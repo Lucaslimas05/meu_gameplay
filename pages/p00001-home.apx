@@ -1,0 +1,144 @@
+page 1 (
+    name: Início
+    alias: HOME
+    title: MEU GAMEPLAY | HOME
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region meu-gameplay (
+        name: Bem vindo, &G_USER_NOME.
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/hero
+            templateOptions: #DEFAULT#
+        }
+        image {
+            fileUrl: #APP_FILES#icons/app-icon-512.png
+        }
+    )
+
+    region novo (
+        name: Horas jogadas por jogo
+        type: chart
+        layout {
+            sequence: 10
+            slot: body
+            columnSpan: 6
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        chart {
+            type: pie
+        }
+        chartLayout {
+            height: 400
+        }
+        value {
+            format: decimal
+            decimalPlaces: 0
+            formatScaling: none
+        }
+
+        series employees_1 (
+            name: Horas jogadas por jogo
+            execution {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    select J.NOME,
+                           JU.HORAS_JOGADAS
+                    FROM JOGO_USUARIO JU 
+                    LEFT JOIN JOGO J ON JU.JOGO_ID = J.ID 
+                    WHERE JU.USUARIO_ID = :G_USER_ID  
+                    
+                    ```
+            }
+            columnMapping {
+                seriesName: HORAS_JOGADAS
+                label: NOME
+                value: HORAS_JOGADAS
+            }
+            label {
+                show: true
+            }
+        )
+
+    )
+
+    region novo_1 (
+        name: Total de jogos zerados
+        type: chart
+        layout {
+            sequence: 20
+            slot: body
+            startNewRow: false
+            columnSpan: 6
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        chartLayout {
+            height: 400
+        }
+
+        series total-de-jogos-zerados (
+            name: Jogos zerados
+            execution {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    select case
+                             when ju.zerado = 0 then 'Não zerado'
+                             when ju.zerado = 1 then 'Zerado'
+                           end          as status_zerado,
+                           count(ju.id) as total_jogos
+                      from jogo_usuario ju
+                      WHERE JU.USUARIO_ID = :G_USER_ID  
+                     group by ju.zerado
+                    
+                    ```
+            }
+            columnMapping {
+                label: STATUS_ZERADO
+                value: TOTAL_JOGOS
+            }
+        )
+
+        axis x (
+            name: x
+        )
+
+        axis y (
+            name: y
+            value {
+                format: decimal
+                decimalPlaces: 0
+                formatScaling: none
+            }
+        )
+
+    )
+
+)
+
